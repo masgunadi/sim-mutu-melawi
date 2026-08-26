@@ -8,7 +8,9 @@ async function callApi(action, { method = 'GET', payload, query } = {}) {
   if (method === 'GET') {
     const url = new URL(BASE_URL)
     url.searchParams.set('action', action)
-    Object.entries(query || {}).forEach(([key, value]) => url.searchParams.set(key, value))
+    Object.entries(query || {}).forEach(([key, value]) => {
+      if (value != null) url.searchParams.set(key, value)
+    })
     const res = await fetch(url.toString())
     return res.json()
   }

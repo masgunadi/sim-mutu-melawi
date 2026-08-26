@@ -36,6 +36,10 @@ function routeAction_(action, params) {
       return addSekolah_(params);
     case 'importSiswaGuru':
       return importSiswaGuru_(params);
+    case 'getRekapPresensi':
+      return getRekapPresensi_(params);
+    case 'seedDummyPresensi':
+      return seedDummyPresensi_(params);
 
     // Placeholder untuk modul-modul berikutnya (belum diimplementasikan):
     // case 'getDashboardSummary': return getDashboardSummary_(params);
