@@ -28,9 +28,17 @@ function routeAction_(action, params) {
     case 'ping':
       return { ok: true, action: 'ping', message: 'API SIM Mutu Melawi aktif', time: new Date().toISOString() };
 
+    case 'listSekolah':
+      return listSekolah_(params);
+    case 'getSekolahDetail':
+      return getSekolahDetail_(params);
+    case 'addSekolah':
+      return addSekolah_(params);
+    case 'importSiswaGuru':
+      return importSiswaGuru_(params);
+
     // Placeholder untuk modul-modul berikutnya (belum diimplementasikan):
     // case 'getDashboardSummary': return getDashboardSummary_(params);
-    // case 'listSekolah':         return listSekolah_(params);
     // case 'importPresensi':      return importPresensi_(params);
 
     default:

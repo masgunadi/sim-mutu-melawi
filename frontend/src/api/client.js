@@ -1,6 +1,6 @@
 const BASE_URL = import.meta.env.VITE_API_BASE_URL || ''
 
-async function callApi(action, { method = 'GET', payload } = {}) {
+async function callApi(action, { method = 'GET', payload, query } = {}) {
   if (!BASE_URL) {
     throw new Error('VITE_API_BASE_URL belum diatur (lihat frontend/.env.example)')
   }
@@ -8,6 +8,7 @@ async function callApi(action, { method = 'GET', payload } = {}) {
   if (method === 'GET') {
     const url = new URL(BASE_URL)
     url.searchParams.set('action', action)
+    Object.entries(query || {}).forEach(([key, value]) => url.searchParams.set(key, value))
     const res = await fetch(url.toString())
     return res.json()
   }

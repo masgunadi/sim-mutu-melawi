@@ -27,10 +27,18 @@ clasp deploy --description "deskripsi singkat perubahan"
 
 Setelah deploy, salin URL Web App ke `frontend/.env` sebagai `VITE_API_BASE_URL`.
 
+## Setup data (sekali saja)
+
+Buka project di [script.google.com](https://script.google.com) (atau `clasp open`), pilih fungsi
+`setupConfigSpreadsheet`, lalu jalankan sekali (Run). Ini membuat Spreadsheet Config pusat
+("SIM Mutu Melawi - Config") berisi daftar sekolah, dan menyimpan ID-nya di Script Properties.
+Setiap sekolah baru yang ditambahkan lewat menu Data Sekolah otomatis dapat Spreadsheet data
+sendiri (sheet `Siswa` & `Guru`), terdaftar di Config ini.
+
 ## Struktur
 
 - `Code.gs` — entry point (`doGet`/`doPost`) dan router aksi (`routeAction_`)
+- `Sekolah.gs` — modul Data Sekolah: Spreadsheet Config pusat + Spreadsheet data per sekolah
 - `appsscript.json` — manifest project (timezone, izin web app)
 
-Setiap modul baru cukup menambah `case` di `routeAction_` dan fungsi handler-nya sendiri —
-belum ada modul yang diimplementasikan di tahap shell ini.
+Setiap modul baru cukup menambah `case` di `routeAction_` dan fungsi handler-nya sendiri.
