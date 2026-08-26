@@ -1,0 +1,15 @@
+# Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+
+# Backend (Apps Script local config, spesifik per akun)
+backend/.clasp.json
+backend/.clasprc.json
+
+# Boilerplate lama, digantikan oleh backend/
+scr/
+
+# OS / editor
+.DS_Store
+Thumbs.db
