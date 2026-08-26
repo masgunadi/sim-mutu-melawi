@@ -1,0 +1,129 @@
+:root {
+  --bg: #f6f8f7;
+  --surface: #ffffff;
+  --border: #e2e8e4;
+  --text: #1e293b;
+  --text-muted: #64748b;
+  --accent: #16a34a;
+  --accent-strong: #15803d;
+  --sidebar-bg: #0f2417;
+  --sidebar-text: #d1e7d8;
+  --sidebar-text-active: #ffffff;
+
+  font-family: 'Segoe UI', system-ui, -apple-system, Roboto, Helvetica, Arial, sans-serif;
+  color-scheme: light dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+}
+
+#root {
+  min-height: 100svh;
+}
+
+.shell {
+  display: flex;
+  min-height: 100svh;
+}
+
+.sidebar {
+  width: 240px;
+  flex-shrink: 0;
+  background: var(--sidebar-bg);
+  color: var(--sidebar-text);
+  display: flex;
+  flex-direction: column;
+  padding: 1.25rem 0.75rem;
+}
+
+.sidebar__brand {
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: #fff;
+  padding: 0 0.75rem 1.5rem;
+}
+
+.sidebar__nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.sidebar__link {
+  padding: 0.6rem 0.75rem;
+  border-radius: 8px;
+  color: var(--sidebar-text);
+  text-decoration: none;
+  font-size: 0.95rem;
+}
+
+.sidebar__link:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.sidebar__link--active {
+  background: var(--accent);
+  color: var(--sidebar-text-active);
+  font-weight: 600;
+}
+
+.shell__main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+
+.topbar__title {
+  font-weight: 600;
+}
+
+.topbar__user {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.shell__content {
+  flex: 1;
+  padding: 1.5rem;
+  overflow-y: auto;
+}
+
+.placeholder {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 2rem;
+  max-width: 640px;
+}
+
+.placeholder h1 {
+  margin: 0 0 0.5rem;
+  font-size: 1.5rem;
+  color: var(--accent-strong);
+}
+
+.placeholder p {
+  margin: 0;
+  color: var(--text-muted);
+}
+
+.api-status {
+  margin-top: 1rem !important;
+}
