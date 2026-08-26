@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { HashRouter, Routes, Route } from 'react-router-dom'
 import DashboardLayout from './layout/DashboardLayout'
 import Dashboard from './pages/Dashboard'
 import DataSekolah from './pages/DataSekolah'
@@ -7,7 +7,7 @@ import PlaceholderPage from './pages/PlaceholderPage'
 
 export default function App() {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <Routes>
         <Route element={<DashboardLayout />}>
           <Route index element={<Dashboard />} />
@@ -31,6 +31,6 @@ export default function App() {
           />
         </Route>
       </Routes>
-    </BrowserRouter>
+    </HashRouter>
   )
 }
