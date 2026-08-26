@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import DashboardLayout from './layout/DashboardLayout'
 import Dashboard from './pages/Dashboard'
+import DataSekolah from './pages/DataSekolah'
 import PlaceholderPage from './pages/PlaceholderPage'
 
 export default function App() {
@@ -9,10 +10,7 @@ export default function App() {
       <Routes>
         <Route element={<DashboardLayout />}>
           <Route index element={<Dashboard />} />
-          <Route
-            path="data-sekolah"
-            element={<PlaceholderPage title="Data Sekolah" description="Profil sekolah, siswa, guru, sarpras — hasil import Dapodik." />}
-          />
+          <Route path="data-sekolah" element={<DataSekolah />} />
           <Route
             path="presensi"
             element={<PlaceholderPage title="Presensi" description="Rekap presensi harian per sekolah (offline import, web, atau AppSheet)." />}
