@@ -281,3 +281,68 @@ body {
   border-radius: 6px;
   border: 1px solid var(--border);
 }
+
+.filter-bar {
+  display: flex;
+  align-items: flex-end;
+  gap: 1rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.filter-bar label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.filter-bar select,
+.filter-bar input {
+  padding: 0.45rem;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+}
+
+.summary-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  max-width: 640px;
+}
+
+.summary-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1rem;
+  text-align: center;
+}
+
+.summary-card__value {
+  font-size: 1.75rem;
+  font-weight: 700;
+}
+
+.summary-card__label {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.summary-card--ok .summary-card__value {
+  color: var(--accent-strong);
+}
+
+.summary-card--warn .summary-card__value {
+  color: #b45309;
+}
+
+.summary-card--bad .summary-card__value {
+  color: #dc2626;
+}

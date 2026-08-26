@@ -11,6 +11,7 @@ var SEKOLAH_HEADERS = [
 ];
 var SISWA_HEADERS = ['nisn', 'nama', 'jenis_kelamin', 'kelas', 'tanggal_lahir', 'status'];
 var GURU_HEADERS = ['nip_nuptk', 'nama', 'jenis_kelamin', 'status_kepegawaian', 'mapel', 'status'];
+var PRESENSI_HEADERS = ['tanggal', 'nisn', 'nama', 'kelas', 'status'];
 
 /**
  * Jalankan sekali secara manual dari editor Apps Script untuk membuat
@@ -80,6 +81,8 @@ function addSekolah_(params) {
   siswaSheet.appendRow(SISWA_HEADERS);
   var guruSheet = dataSs.insertSheet('Guru');
   guruSheet.appendRow(GURU_HEADERS);
+  var presensiSheet = dataSs.insertSheet('Presensi');
+  presensiSheet.appendRow(PRESENSI_HEADERS);
 
   var idSekolah = 'SKL-' + Utilities.getUuid().slice(0, 8);
   var sheet = getConfigSheet_();
