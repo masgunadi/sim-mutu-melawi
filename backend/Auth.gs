@@ -19,7 +19,7 @@ var PERAN_WILAYAH = { kepala_desa: 'desa', camat: 'kecamatan' };
 
 // Isi dengan OAuth Client ID dari Google Cloud Console (lihat docs/hak-akses.md) —
 // dipakai untuk memastikan idToken benar-benar dibuat untuk aplikasi ini.
-var GOOGLE_OAUTH_CLIENT_ID = 'ISI_SETELAH_BUAT_OAUTH_CLIENT_ID';
+var GOOGLE_OAUTH_CLIENT_ID = '68270233430-7p6f5f3tnu6qkm228tsqjiie4ilbflkg.apps.googleusercontent.com';
 
 function getPenggunaSheet_() {
   var props = PropertiesService.getScriptProperties();
