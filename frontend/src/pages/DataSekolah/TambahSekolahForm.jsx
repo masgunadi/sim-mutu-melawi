@@ -18,6 +18,7 @@ export default function TambahSekolahForm({ onClose, onCreated }) {
     addSekolah({ namaSekolah, npsn, kecamatan, desa, skemaInput, folderId })
       .then((res) => {
         if (!res.ok) throw new Error(res.error)
+        if (res.warning) window.alert(res.warning)
         onCreated()
       })
       .catch((err) => setErrorMessage(err.message))
