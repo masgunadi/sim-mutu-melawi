@@ -8,10 +8,10 @@ export function getSekolahDetail(idSekolah) {
   return callApi('getSekolahDetail', { query: { idSekolah } })
 }
 
-export function addSekolah({ namaSekolah, npsn, kecamatan, desa, skemaInput }) {
+export function addSekolah({ namaSekolah, npsn, kecamatan, desa, skemaInput, folderId }) {
   return callApi('addSekolah', {
     method: 'POST',
-    payload: { namaSekolah, npsn, kecamatan, desa, skemaInput },
+    payload: { namaSekolah, npsn, kecamatan, desa, skemaInput, folderId },
   })
 }
 

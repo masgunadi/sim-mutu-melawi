@@ -7,6 +7,7 @@ export default function TambahSekolahForm({ onClose, onCreated }) {
   const [kecamatan, setKecamatan] = useState('')
   const [desa, setDesa] = useState('')
   const [skemaInput, setSkemaInput] = useState('offline')
+  const [folderId, setFolderId] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
 
@@ -14,7 +15,7 @@ export default function TambahSekolahForm({ onClose, onCreated }) {
     e.preventDefault()
     setSubmitting(true)
     setErrorMessage('')
-    addSekolah({ namaSekolah, npsn, kecamatan, desa, skemaInput })
+    addSekolah({ namaSekolah, npsn, kecamatan, desa, skemaInput, folderId })
       .then((res) => {
         if (!res.ok) throw new Error(res.error)
         onCreated()
@@ -56,6 +57,19 @@ export default function TambahSekolahForm({ onClose, onCreated }) {
             <option value="appsheet">AppSheet</option>
           </select>
         </label>
+
+        <label>
+          Folder ID di Drive (opsional)
+          <input
+            value={folderId}
+            onChange={(e) => setFolderId(e.target.value)}
+            placeholder="Tempel dari URL folder sekolah yang sudah dibuat"
+          />
+        </label>
+        <p className="field-hint">
+          Kosongkan kalau belum ada folder khusus — Spreadsheet data akan dibuat di My Drive dan
+          bisa dipindah manual nanti.
+        </p>
 
         {errorMessage && <p className="error-text">{errorMessage}</p>}
 

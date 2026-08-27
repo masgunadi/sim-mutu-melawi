@@ -7,17 +7,38 @@ var CONFIG_SPREADSHEET_ID_KEY = 'CONFIG_SPREADSHEET_ID';
 var SEKOLAH_SHEET = 'Sekolah';
 var SEKOLAH_HEADERS = [
   'id_sekolah', 'npsn', 'nama_sekolah', 'kecamatan', 'desa', 'skema_input',
-  'spreadsheet_id_data', 'jumlah_siswa', 'jumlah_guru', 'status_aktif', 'updated_at',
+  'spreadsheet_id_data', 'folder_id', 'jumlah_siswa', 'jumlah_guru', 'status_aktif', 'updated_at',
 ];
 var SISWA_HEADERS = ['nisn', 'nama', 'jenis_kelamin', 'kelas', 'tanggal_lahir', 'status'];
 var GURU_HEADERS = ['nip_nuptk', 'nama', 'jenis_kelamin', 'status_kepegawaian', 'mapel', 'status'];
 var PRESENSI_HEADERS = ['tanggal', 'nisn', 'nama', 'kelas', 'status'];
 
 /**
+ * Pindahkan file (mis. Spreadsheet yang baru dibuat lewat SpreadsheetApp.create,
+ * yang selalu masuk ke root My Drive akun yang deploy) ke folder Drive Bersama
+ * yang sudah disiapkan manual. Aman dipanggil untuk file yang parent-nya mana pun.
+ */
+function moveFileToFolder_(fileId, folderId) {
+  if (!folderId) return;
+  var file = DriveApp.getFileById(fileId);
+  var target = DriveApp.getFolderById(folderId);
+  target.addFile(file);
+  var parents = file.getParents();
+  while (parents.hasNext()) {
+    var parent = parents.next();
+    if (parent.getId() !== folderId) parent.removeFile(file);
+  }
+}
+
+/**
  * Jalankan sekali secara manual dari editor Apps Script untuk membuat
  * Spreadsheet Config (kalau belum ada) dan menyimpan ID-nya.
+ *
+ * configFolderId (opsional): ID folder "00-Config" di Drive Bersama —
+ * tempel dari URL folder itu (bagian setelah /folders/). Kalau diisi,
+ * Spreadsheet Config langsung dibuat di dalam folder itu, bukan di My Drive.
  */
-function setupConfigSpreadsheet() {
+function setupConfigSpreadsheet(configFolderId) {
   var props = PropertiesService.getScriptProperties();
   var existingId = props.getProperty(CONFIG_SPREADSHEET_ID_KEY);
   if (existingId) {
@@ -29,6 +50,7 @@ function setupConfigSpreadsheet() {
   sheet.appendRow(SEKOLAH_HEADERS);
   var penggunaSheet = ss.insertSheet(PENGGUNA_SHEET);
   penggunaSheet.appendRow(PENGGUNA_HEADERS);
+  moveFileToFolder_(ss.getId(), configFolderId);
   props.setProperty(CONFIG_SPREADSHEET_ID_KEY, ss.getId());
   return { ok: true, message: 'Spreadsheet Config dibuat', spreadsheetId: ss.getId(), url: ss.getUrl() };
 }
@@ -88,6 +110,7 @@ function addSekolah_(params) {
   var kecamatan = params.kecamatan;
   var desa = params.desa;
   var skemaInput = params.skemaInput || 'offline';
+  var folderId = params.folderId || '';
 
   var dataSs = SpreadsheetApp.create('SIM Mutu Melawi - ' + namaSekolah);
   var siswaSheet = dataSs.getSheets()[0];
@@ -97,12 +120,13 @@ function addSekolah_(params) {
   guruSheet.appendRow(GURU_HEADERS);
   var presensiSheet = dataSs.insertSheet('Presensi');
   presensiSheet.appendRow(PRESENSI_HEADERS);
+  moveFileToFolder_(dataSs.getId(), folderId);
 
   var idSekolah = 'SKL-' + Utilities.getUuid().slice(0, 8);
   var sheet = getConfigSheet_();
   sheet.appendRow([
     idSekolah, npsn, namaSekolah, kecamatan, desa, skemaInput,
-    dataSs.getId(), 0, 0, true, new Date().toISOString(),
+    dataSs.getId(), folderId, 0, 0, true, new Date().toISOString(),
   ]);
 
   return { ok: true, idSekolah: idSekolah, spreadsheetId: dataSs.getId(), url: dataSs.getUrl() };
