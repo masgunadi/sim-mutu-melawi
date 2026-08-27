@@ -56,9 +56,21 @@ function setupConfigSpreadsheet() {
   sheet.appendRow(SEKOLAH_HEADERS);
   var penggunaSheet = ss.insertSheet(PENGGUNA_SHEET);
   penggunaSheet.appendRow(PENGGUNA_HEADERS);
-  moveFileToFolder_(ss.getId(), configFolderId);
+
+  var folderWarning = '';
+  try {
+    moveFileToFolder_(ss.getId(), configFolderId);
+  } catch (err) {
+    folderWarning = 'Spreadsheet dibuat, TAPI gagal dipindah ke folder (' + err.message + '). ' +
+      'Cek lagi Script Property CONFIG_FOLDER_ID — mungkin isinya bukan ID folder yang benar. ' +
+      'Spreadsheet-nya tetap ada, cuma lokasinya di My Drive, bisa dipindah manual.';
+  }
+
   props.setProperty(CONFIG_SPREADSHEET_ID_KEY, ss.getId());
-  return { ok: true, message: 'Spreadsheet Config dibuat', spreadsheetId: ss.getId(), url: ss.getUrl() };
+  var result = { ok: true, message: 'Spreadsheet Config dibuat', spreadsheetId: ss.getId(), url: ss.getUrl() };
+  if (folderWarning) result.warning = folderWarning;
+  Logger.log(JSON.stringify(result, null, 2));
+  return result;
 }
 
 function getConfigSheet_() {
@@ -126,7 +138,15 @@ function addSekolah_(params) {
   guruSheet.appendRow(GURU_HEADERS);
   var presensiSheet = dataSs.insertSheet('Presensi');
   presensiSheet.appendRow(PRESENSI_HEADERS);
-  moveFileToFolder_(dataSs.getId(), folderId);
+
+  var folderWarning = '';
+  try {
+    moveFileToFolder_(dataSs.getId(), folderId);
+  } catch (err) {
+    folderWarning = 'Sekolah tersimpan, TAPI Spreadsheet-nya gagal dipindah ke folder (' + err.message + '). ' +
+      'Cek lagi Folder ID yang ditempel — Spreadsheet tetap ada di My Drive, bisa dipindah manual.';
+    folderId = '';
+  }
 
   var idSekolah = 'SKL-' + Utilities.getUuid().slice(0, 8);
   var sheet = getConfigSheet_();
@@ -135,7 +155,9 @@ function addSekolah_(params) {
     dataSs.getId(), folderId, 0, 0, true, new Date().toISOString(),
   ]);
 
-  return { ok: true, idSekolah: idSekolah, spreadsheetId: dataSs.getId(), url: dataSs.getUrl() };
+  var result = { ok: true, idSekolah: idSekolah, spreadsheetId: dataSs.getId(), url: dataSs.getUrl() };
+  if (folderWarning) result.warning = folderWarning;
+  return result;
 }
 
 /**
