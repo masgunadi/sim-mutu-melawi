@@ -38,8 +38,14 @@ jobs:
         # Alamat sementara: https://<user>.github.io/sim-mutu-melawi/
         # Kalau nanti pindah ke domain sendiri (di root, mis. mutu.melawikab.go.id),
         # hapus baris VITE_BASE_PATH ini.
+        #
+        # VITE_API_BASE_URL & VITE_GOOGLE_CLIENT_ID diambil dari Settings > Secrets and
+        # variables > Actions > Variables di repo GitHub (bukan disimpan di kode) —
+        # ganti nilainya di sana kalau backend di-deploy ulang ke URL baru.
         env:
           VITE_BASE_PATH: /sim-mutu-melawi/
+          VITE_API_BASE_URL: ${{ vars.VITE_API_BASE_URL }}
+          VITE_GOOGLE_CLIENT_ID: ${{ vars.VITE_GOOGLE_CLIENT_ID }}
         run: npm run build
 
       - uses: actions/upload-pages-artifact@v3
