@@ -1,3 +1,5 @@
+import { getAuthToken } from '../auth/tokenStore'
+
 const BASE_URL = import.meta.env.VITE_API_BASE_URL || ''
 
 async function callApi(action, { method = 'GET', payload, query } = {}) {
@@ -8,6 +10,7 @@ async function callApi(action, { method = 'GET', payload, query } = {}) {
   if (method === 'GET') {
     const url = new URL(BASE_URL)
     url.searchParams.set('action', action)
+    url.searchParams.set('idToken', getAuthToken() || '')
     Object.entries(query || {}).forEach(([key, value]) => {
       if (value != null) url.searchParams.set(key, value)
     })
@@ -18,7 +21,7 @@ async function callApi(action, { method = 'GET', payload, query } = {}) {
   const res = await fetch(BASE_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-    body: JSON.stringify({ action, payload }),
+    body: JSON.stringify({ action, payload: { ...payload, idToken: getAuthToken() } }),
   })
   return res.json()
 }

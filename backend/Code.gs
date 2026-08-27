@@ -9,7 +9,7 @@
 
 function doGet(e) {
   var action = (e.parameter && e.parameter.action) || 'ping';
-  return respond_(routeAction_(action, e.parameter));
+  return respond_(safeRoute_(action, e.parameter));
 }
 
 function doPost(e) {
@@ -20,13 +20,27 @@ function doPost(e) {
     return respond_({ ok: false, error: 'Invalid JSON body' });
   }
   var action = body.action || 'ping';
-  return respond_(routeAction_(action, body.payload || {}));
+  return respond_(safeRoute_(action, body.payload || {}));
+}
+
+// Bungkus routeAction_ supaya error (mis. token tidak valid, belum login,
+// tidak punya akses) selalu balik sebagai JSON { ok:false, error }, bukan
+// halaman error HTML bawaan Apps Script.
+function safeRoute_(action, params) {
+  try {
+    return routeAction_(action, params);
+  } catch (err) {
+    return { ok: false, error: err.message };
+  }
 }
 
 function routeAction_(action, params) {
   switch (action) {
     case 'ping':
       return { ok: true, action: 'ping', message: 'API SIM Mutu Melawi aktif', time: new Date().toISOString() };
+
+    case 'getCurrentUser':
+      return getCurrentUser_(params);
 
     case 'listSekolah':
       return listSekolah_(params);

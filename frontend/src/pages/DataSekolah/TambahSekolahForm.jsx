@@ -5,6 +5,7 @@ export default function TambahSekolahForm({ onClose, onCreated }) {
   const [namaSekolah, setNamaSekolah] = useState('')
   const [npsn, setNpsn] = useState('')
   const [kecamatan, setKecamatan] = useState('')
+  const [desa, setDesa] = useState('')
   const [skemaInput, setSkemaInput] = useState('offline')
   const [submitting, setSubmitting] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
@@ -13,7 +14,7 @@ export default function TambahSekolahForm({ onClose, onCreated }) {
     e.preventDefault()
     setSubmitting(true)
     setErrorMessage('')
-    addSekolah({ namaSekolah, npsn, kecamatan, skemaInput })
+    addSekolah({ namaSekolah, npsn, kecamatan, desa, skemaInput })
       .then((res) => {
         if (!res.ok) throw new Error(res.error)
         onCreated()
@@ -40,6 +41,11 @@ export default function TambahSekolahForm({ onClose, onCreated }) {
         <label>
           Kecamatan
           <input value={kecamatan} onChange={(e) => setKecamatan(e.target.value)} required />
+        </label>
+
+        <label>
+          Desa
+          <input value={desa} onChange={(e) => setDesa(e.target.value)} required />
         </label>
 
         <label>
