@@ -31,19 +31,25 @@ function moveFileToFolder_(fileId, folderId) {
 }
 
 /**
- * Jalankan sekali secara manual dari editor Apps Script untuk membuat
- * Spreadsheet Config (kalau belum ada) dan menyimpan ID-nya.
+ * Jalankan sekali secara manual dari editor Apps Script (tombol Run — tidak
+ * perlu isi argumen apapun) untuk membuat Spreadsheet Config (kalau belum
+ * ada) dan menyimpan ID-nya.
  *
- * configFolderId (opsional): ID folder "00-Config" di Drive Bersama —
- * tempel dari URL folder itu (bagian setelah /folders/). Kalau diisi,
- * Spreadsheet Config langsung dibuat di dalam folder itu, bukan di My Drive.
+ * Supaya Spreadsheet Config dibuat langsung di folder "00-Config" (bukan di
+ * My Drive), isi dulu Script Property CONFIG_FOLDER_ID sebelum menjalankan
+ * fungsi ini: menu ⚙️ Project Settings (di sidebar kiri editor) → scroll ke
+ * "Script Properties" → Add script property → Property = CONFIG_FOLDER_ID,
+ * Value = ID folder "00-Config" (dari URL folder itu) → Save. Boleh dilewati
+ * kalau belum ada foldernya — Spreadsheet akan dibuat di My Drive dan bisa
+ * dipindah manual belakangan.
  */
-function setupConfigSpreadsheet(configFolderId) {
+function setupConfigSpreadsheet() {
   var props = PropertiesService.getScriptProperties();
   var existingId = props.getProperty(CONFIG_SPREADSHEET_ID_KEY);
   if (existingId) {
     return { ok: true, message: 'Sudah ada', spreadsheetId: existingId };
   }
+  var configFolderId = props.getProperty('CONFIG_FOLDER_ID');
   var ss = SpreadsheetApp.create('SIM Mutu Melawi - Config');
   var sheet = ss.getSheets()[0];
   sheet.setName(SEKOLAH_SHEET);
