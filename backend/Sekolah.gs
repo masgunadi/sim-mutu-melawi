@@ -6,7 +6,7 @@
 var CONFIG_SPREADSHEET_ID_KEY = 'CONFIG_SPREADSHEET_ID';
 var SEKOLAH_SHEET = 'Sekolah';
 var SEKOLAH_HEADERS = [
-  'id_sekolah', 'npsn', 'nama_sekolah', 'kecamatan', 'skema_input',
+  'id_sekolah', 'npsn', 'nama_sekolah', 'kecamatan', 'desa', 'skema_input',
   'spreadsheet_id_data', 'jumlah_siswa', 'jumlah_guru', 'status_aktif', 'updated_at',
 ];
 var SISWA_HEADERS = ['nisn', 'nama', 'jenis_kelamin', 'kelas', 'tanggal_lahir', 'status'];
@@ -27,6 +27,8 @@ function setupConfigSpreadsheet() {
   var sheet = ss.getSheets()[0];
   sheet.setName(SEKOLAH_SHEET);
   sheet.appendRow(SEKOLAH_HEADERS);
+  var penggunaSheet = ss.insertSheet(PENGGUNA_SHEET);
+  penggunaSheet.appendRow(PENGGUNA_HEADERS);
   props.setProperty(CONFIG_SPREADSHEET_ID_KEY, ss.getId());
   return { ok: true, message: 'Spreadsheet Config dibuat', spreadsheetId: ss.getId(), url: ss.getUrl() };
 }
@@ -52,16 +54,25 @@ function readSheetAsObjects_(sheet) {
   });
 }
 
-function listSekolah_() {
+function listAllSekolah_() {
   var sheet = getConfigSheet_();
-  return { ok: true, data: readSheetAsObjects_(sheet) };
+  return readSheetAsObjects_(sheet);
+}
+
+function listSekolah_(params) {
+  var caller = resolveCaller_(params);
+  var data = filterSekolahByAccess_(caller.roles, listAllSekolah_());
+  return { ok: true, data: data };
 }
 
 function getSekolahDetail_(params) {
+  var caller = resolveCaller_(params);
   var idSekolah = params.idSekolah;
-  var list = listSekolah_().data;
-  var sekolah = list.filter(function (s) { return s.id_sekolah === idSekolah; })[0];
+  var sekolah = listAllSekolah_().filter(function (s) { return s.id_sekolah === idSekolah; })[0];
   if (!sekolah) return { ok: false, error: 'Sekolah tidak ditemukan: ' + idSekolah };
+  if (!hasAccessToSekolah_(caller.roles, sekolah)) {
+    return { ok: false, error: 'Tidak punya akses ke sekolah ini' };
+  }
 
   var dataSs = SpreadsheetApp.openById(sekolah.spreadsheet_id_data);
   var siswa = readSheetAsObjects_(dataSs.getSheetByName('Siswa'));
@@ -70,9 +81,12 @@ function getSekolahDetail_(params) {
 }
 
 function addSekolah_(params) {
+  requireRole_(params, ['admin_dinas']);
+
   var namaSekolah = params.namaSekolah;
   var npsn = params.npsn;
   var kecamatan = params.kecamatan;
+  var desa = params.desa;
   var skemaInput = params.skemaInput || 'offline';
 
   var dataSs = SpreadsheetApp.create('SIM Mutu Melawi - ' + namaSekolah);
@@ -87,7 +101,7 @@ function addSekolah_(params) {
   var idSekolah = 'SKL-' + Utilities.getUuid().slice(0, 8);
   var sheet = getConfigSheet_();
   sheet.appendRow([
-    idSekolah, npsn, namaSekolah, kecamatan, skemaInput,
+    idSekolah, npsn, namaSekolah, kecamatan, desa, skemaInput,
     dataSs.getId(), 0, 0, true, new Date().toISOString(),
   ]);
 
@@ -100,9 +114,16 @@ function addSekolah_(params) {
  * Menambahkan baris baru (append), bukan menimpa data lama.
  */
 function importSiswaGuru_(params) {
+  var caller = resolveCaller_(params);
   var idSekolah = params.idSekolah;
   var siswaRows = params.siswa || [];
   var guruRows = params.guru || [];
+
+  var sekolah = listAllSekolah_().filter(function (s) { return s.id_sekolah === idSekolah; })[0];
+  if (!sekolah) return { ok: false, error: 'Sekolah tidak ditemukan: ' + idSekolah };
+  if (!canEditSekolah_(caller.roles, sekolah)) {
+    return { ok: false, error: 'Tidak punya akses untuk mengubah data sekolah ini' };
+  }
 
   var configSheet = getConfigSheet_();
   var values = configSheet.getDataRange().getValues();

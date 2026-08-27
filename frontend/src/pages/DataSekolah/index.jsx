@@ -1,9 +1,13 @@
 import { useEffect, useState } from 'react'
 import { listSekolah } from '../../api/sekolah'
+import { useAuth } from '../../auth/AuthContext'
+import { hasRole } from '../../auth/roles'
 import TambahSekolahForm from './TambahSekolahForm'
 import SekolahDetail from './SekolahDetail'
 
 export default function DataSekolah() {
+  const { user } = useAuth()
+  const bolehTambah = hasRole(user, 'admin_dinas')
   const [sekolahList, setSekolahList] = useState([])
   const [status, setStatus] = useState('loading')
   const [errorMessage, setErrorMessage] = useState('')
@@ -42,9 +46,11 @@ export default function DataSekolah() {
     <div>
       <div className="page-header">
         <h1>Data Sekolah</h1>
-        <button className="btn btn--primary" onClick={() => setShowForm(true)}>
-          + Tambah Sekolah
-        </button>
+        {bolehTambah && (
+          <button className="btn btn--primary" onClick={() => setShowForm(true)}>
+            + Tambah Sekolah
+          </button>
+        )}
       </div>
 
       {showForm && (
@@ -77,6 +83,7 @@ export default function DataSekolah() {
               <th>Nama Sekolah</th>
               <th>NPSN</th>
               <th>Kecamatan</th>
+              <th>Desa</th>
               <th>Skema Input</th>
               <th>Jumlah Siswa</th>
               <th>Jumlah Guru</th>
@@ -89,6 +96,7 @@ export default function DataSekolah() {
                 <td>{s.nama_sekolah}</td>
                 <td>{s.npsn}</td>
                 <td>{s.kecamatan}</td>
+                <td>{s.desa}</td>
                 <td>{s.skema_input}</td>
                 <td>{s.jumlah_siswa}</td>
                 <td>{s.jumlah_guru}</td>

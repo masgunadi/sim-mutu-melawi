@@ -12,8 +12,7 @@ var DUMMY_SISWA_PER_KELAS = 5;
 var DUMMY_JUMLAH_HARI = 7;
 
 function findSekolahRow_(idSekolah) {
-  var list = listSekolah_().data;
-  var sekolah = list.filter(function (s) { return s.id_sekolah === idSekolah; })[0];
+  var sekolah = listAllSekolah_().filter(function (s) { return s.id_sekolah === idSekolah; })[0];
   if (!sekolah) throw new Error('Sekolah tidak ditemukan: ' + idSekolah);
   return sekolah;
 }
@@ -34,9 +33,13 @@ function summarizePresensi_(rows) {
  * params: { idSekolah, tanggal? } — tanggal format 'yyyy-MM-dd', default hari ini.
  */
 function getRekapPresensi_(params) {
+  var caller = resolveCaller_(params);
   var idSekolah = params.idSekolah;
   var tanggal = params.tanggal || formatTanggal_(new Date());
   var sekolah = findSekolahRow_(idSekolah);
+  if (!hasAccessToSekolah_(caller.roles, sekolah)) {
+    return { ok: false, error: 'Tidak punya akses ke sekolah ini' };
+  }
 
   var dataSs = SpreadsheetApp.openById(sekolah.spreadsheet_id_data);
   var allRows = readSheetAsObjects_(dataSs.getSheetByName('Presensi'));
@@ -51,8 +54,12 @@ function getRekapPresensi_(params) {
  * siswa dummy hanya dibuat kalau sheet Siswa masih kosong.
  */
 function seedDummyPresensi_(params) {
+  var caller = resolveCaller_(params);
   var idSekolah = params.idSekolah;
   var sekolah = findSekolahRow_(idSekolah);
+  if (!canEditSekolah_(caller.roles, sekolah)) {
+    return { ok: false, error: 'Tidak punya akses untuk mengubah data sekolah ini' };
+  }
   var dataSs = SpreadsheetApp.openById(sekolah.spreadsheet_id_data);
   var siswaSheet = dataSs.getSheetByName('Siswa');
 
