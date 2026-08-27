@@ -36,8 +36,29 @@ export default function SekolahDetail({ idSekolah, onBack }) {
         <>
           <h1>{detail.sekolah.nama_sekolah}</h1>
           <p className="text-muted">
-            NPSN {detail.sekolah.npsn} &middot; {detail.sekolah.kecamatan} &middot; Skema input:{' '}
-            {detail.sekolah.skema_input}
+            NPSN {detail.sekolah.npsn} &middot; {detail.sekolah.kecamatan}, {detail.sekolah.desa}{' '}
+            &middot; Skema input: {detail.sekolah.skema_input}
+          </p>
+          <p className="text-muted">
+            <a
+              href={`https://docs.google.com/spreadsheets/d/${detail.sekolah.spreadsheet_id_data}`}
+              target="_blank"
+              rel="noreferrer"
+            >
+              Buka Spreadsheet data
+            </a>
+            {detail.sekolah.folder_id && (
+              <>
+                {' '}&middot;{' '}
+                <a
+                  href={`https://drive.google.com/drive/folders/${detail.sekolah.folder_id}`}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Buka folder Drive
+                </a>
+              </>
+            )}
           </p>
 
           <ImportExcelPanel idSekolah={idSekolah} onImported={reload} />
